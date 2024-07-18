@@ -1,32 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monaco Editor with Web Worker</title>
-    <style>
-        #container {
-            width: 800px;
-            height: 600px;
-            border: 1px solid grey;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monaco Editor with Worker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs/loader.js"></script>
+  <script src="dist/main.bundle.js"></script>
 </head>
 <body>
-    <div id="container"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs/loader.js"></script>
-    <script>
-        require.config({
-            paths: {
-                vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs",
-            },
-        });
-
-        require(["vs/editor/editor.main"], function () {
-            require(["editor", "newLang"], function () {
-                console.log("Monaco Editor and custom language loaded.");
-            });
-        });
-    </script>
+  <div id="container" style="width:800px;height:600px;"></div>
 </body>
 </html>

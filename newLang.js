@@ -4,7 +4,7 @@ require.config({
   },
 });
 
-require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupHighlighting, snippets) {
+require(["vs/editor/editor.main", "./style", "./snippets"], function (monaco, setupHighlighting, snippets) {
   setupHighlighting(monaco);
 
   monaco.languages.registerCompletionItemProvider("mylang", {

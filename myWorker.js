@@ -1,30 +1,37 @@
-console.log('Worker started');
+import { createIfSnippet, createIfElseSnippet, createForSnippet, createWhileSnippet } from './snippets';
 
-let monaco;
+self.onmessage = function (event) {
+  const { action, data } = event.data;
 
-self.onmessage = function(e) {
-  console.log('Message received in worker', e.data);
-  const data = e.data;
+  switch (action) {
+    case 'provideCompletionItems':
+      const { modelValue, position } = data;
+      const range = {
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+        startColumn: position.column,
+        endColumn: position.column,
+      };
 
-  if (data.method === 'init') {
-    monaco = data.monaco;
-    importScripts('snippets.js');
-  }
+      const suggestions = [];
 
-  if (data.method === 'completionItems') {
-    const model = data.model;
-    const position = data.position;
-    const range = data.range;
-    const suggestions = [];
+      if (modelValue.includes("if")) {
+        suggestions.push(createIfSnippet(range));
+        suggestions.push(createIfElseSnippet(range));
+      }
 
-    // Add snippets using functions from snippets.js
-    suggestions.push(snippets.createIfSnippet(range));
-    suggestions.push(snippets.createIfElseSnippet(range));
-    suggestions.push(snippets.createForSnippet(range));
-    suggestions.push(snippets.createWhileSnippet(range));
+      if (modelValue.includes("for")) {
+        suggestions.push(createForSnippet(range));
+      }
 
-    self.postMessage({ method: 'completionItemsResult', suggestions: suggestions });
+      if (modelValue.includes("while")) {
+        suggestions.push(createWhileSnippet(range));
+      }
+
+      self.postMessage({ action: 'completionItems', suggestions: suggestions });
+      break;
+
+    default:
+      break;
   }
 };
-
-console.log('Worker initialized');

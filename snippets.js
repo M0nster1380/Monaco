@@ -1,6 +1,5 @@
-// snippets.js
-define([], function () {
-  function createIfSnippet(range) {
+const snippets = {
+  createIfSnippet: function(range) {
     return {
       label: "if",
       kind: monaco.languages.CompletionItemKind.Snippet,
@@ -14,9 +13,8 @@ define([], function () {
       detail: 'Конструкция if', 
       documentation: 'Документация для if',
     };
-  }
-
-  function createIfElseSnippet(range) {
+  },
+  createIfElseSnippet: function(range) {
     return {
       label: "if...else",
       kind: monaco.languages.CompletionItemKind.Snippet,
@@ -28,13 +26,12 @@ define([], function () {
         "}"
       ].join('\n'),
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: 'Конструкция if...else',
+      range: range,
+      detail: 'Конструкция if...else', 
       documentation: 'Документация для if...else',
-      range: range
     };
-  }
-
-  function createForSnippet(range) {
+  },
+  createForSnippet: function(range) {
     return {
       label: "for",
       kind: monaco.languages.CompletionItemKind.Snippet,
@@ -44,13 +41,12 @@ define([], function () {
         "}"
       ].join('\n'),
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: 'Конструкция for',
+      range: range,
+      detail: 'Конструкция for', 
       documentation: 'Документация для for',
-      range: range
     };
-  }
-
-  function createWhileSnippet(range) {
+  },
+  createWhileSnippet: function(range) {
     return {
       label: "while",
       kind: monaco.languages.CompletionItemKind.Snippet,
@@ -60,16 +56,11 @@ define([], function () {
         "}"
       ].join('\n'),
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      detail: 'Конструкция while',
+      range: range,
+      detail: 'Конструкция while', 
       documentation: 'Документация для while',
-      range: range
     };
   }
+};
 
-  return {
-    createIfSnippet,
-    createIfElseSnippet,
-    createForSnippet,
-    createWhileSnippet
-  };
-});
+self.snippets = snippets;

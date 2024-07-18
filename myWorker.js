@@ -1,6 +1,9 @@
+console.log('Worker started');
+
 let monaco;
 
 self.onmessage = function(e) {
+  console.log('Message received in worker', e.data);
   const data = e.data;
 
   if (data.method === 'init') {
@@ -8,7 +11,6 @@ self.onmessage = function(e) {
     importScripts('snippets.js');
   }
 
-  
   if (data.method === 'completionItems') {
     const model = data.model;
     const position = data.position;
@@ -24,3 +26,5 @@ self.onmessage = function(e) {
     self.postMessage({ method: 'completionItemsResult', suggestions: suggestions });
   }
 };
+
+console.log('Worker initialized');

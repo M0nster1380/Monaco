@@ -1,37 +1,13 @@
-import { createIfSnippet, createIfElseSnippet, createForSnippet, createWhileSnippet } from './snippets';
+// myWorker.js
 
-self.onmessage = function (event) {
-  const { action, data } = event.data;
+self.onmessage = function (e) {
+  const { data } = e;
+  const { id, method, params } = data;
 
-  switch (action) {
-    case 'provideCompletionItems':
-      const { modelValue, position } = data;
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: position.column,
-        endColumn: position.column,
-      };
-
-      const suggestions = [];
-
-      if (modelValue.includes("if")) {
-        suggestions.push(createIfSnippet(range));
-        suggestions.push(createIfElseSnippet(range));
-      }
-
-      if (modelValue.includes("for")) {
-        suggestions.push(createForSnippet(range));
-      }
-
-      if (modelValue.includes("while")) {
-        suggestions.push(createWhileSnippet(range));
-      }
-
-      self.postMessage({ action: 'completionItems', suggestions: suggestions });
-      break;
-
-    default:
-      break;
+  // Пример простой логики рабочего потока
+  if (method === 'echo') {
+    self.postMessage({ id, result: params });
   }
+
+  // Добавьте другие методы по необходимости
 };

@@ -1,74 +1,31 @@
-require.config({
-  paths: {
-    vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs",
-  },
+// newLang.js
+
+import * as monaco from 'monaco-editor';
+import MyWorker from './myWorker.js'; // Импорт пользовательского рабочего потока
+
+// Регистрация пользовательского языка
+monaco.languages.register({ id: 'myLang' });
+
+monaco.languages.setMonarchTokensProvider('myLang', {
+  tokenizer: {
+    root: [
+      [/\b(?:myCustomKeyword)\b/, 'keyword'],
+      // Добавьте другие правила токенизации по необходимости
+    ]
+  }
 });
 
-require(["vs/editor/editor.main", "./style", "./snippets"], function (monaco, setupHighlighting, snippets) {
-  setupHighlighting(monaco);
+// Создание экземпляра рабочего потока и его регистрация
+const worker = new MyWorker();
 
-  monaco.languages.registerCompletionItemProvider("mylang", {
-    triggerCharacters: ["."],
-    provideCompletionItems: function (model, position) {
-      const textUntilPosition = model.getValueInRange({
-        startLineNumber: 1,
-        startColumn: 1,
-        endLineNumber: position.lineNumber,
-        endColumn: position.column,
-      });
-
-      const word = model.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn,
-      };
-
-      const suggestions = [];
-
-      // Check for dot notation
-      const match = textUntilPosition.match(/(\w+)\.$/);
-      if (match) {
-        const objectName = match[1];
-        // Define the fields for the object
-        const fields = {
-          myObject: ["field1", "field2", "field3"],
-          anotherObject: ["fieldA", "fieldB", "fieldC"],
-        };
-        if (fields[objectName]) {
-          fields[objectName].forEach((field) => {
-            suggestions.push({
-              label: field,
-              kind: monaco.languages.CompletionItemKind.Field,
-              insertText: field,
-              range: range,
-            });
-          });
-        }
-      } else {
-        // Default suggestions
-        suggestions.push({
-          label: "myObject",
-          kind: monaco.languages.CompletionItemKind.Variable,
-          insertText: "myObject",
-          range: range,
-        });
-        suggestions.push({
-          label: "anotherObject",
-          kind: monaco.languages.CompletionItemKind.Variable,
-          insertText: "anotherObject",
-          range: range,
-        });
-      }
-
-      // Add snippets using functions from snippets.js
-      suggestions.push(snippets.createIfSnippet(range));
-      suggestions.push(snippets.createIfElseSnippet(range));
-      suggestions.push(snippets.createForSnippet(range));
-      suggestions.push(snippets.createWhileSnippet(range));
-  
-      return { suggestions: suggestions };
-    },
-  });
+monaco.languages.registerWorker('myLang', {
+  id: 'myLang',
+  label: 'My Custom Language Worker',
+  worker: worker,
+  create: () => ({
+    getLanguageId: () => 'myLang',
+    doSomething: (params) => {
+      worker.postMessage({ method: 'echo', params });
+    }
+  })
 });

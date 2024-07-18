@@ -8,6 +8,7 @@ self.onmessage = function(e) {
     importScripts('snippets.js');
   }
 
+  
   if (data.method === 'completionItems') {
     const model = data.model;
     const position = data.position;

@@ -1,3 +1,5 @@
+
+
 require.config({
   paths: {
     vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.30.1/min/vs",
@@ -16,7 +18,7 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
         endLineNumber: position.lineNumber,
         endColumn: position.column,
       });
-
+  
       const word = model.getWordUntilPosition(position);
       const range = {
         startLineNumber: position.lineNumber,
@@ -24,12 +26,12 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
         startColumn: word.startColumn,
         endColumn: word.endColumn,
       };
-
+  
       const suggestions = [];
-
+  
       // Check for dot notation
-      const match = textUntilPosition.match(/(\w+)\.$/);
-      if (match) {
+      const match = textUntilPosition.match(/([_a-zA-Z]\w*)\.$/);
+      if (match != null) {
         const objectName = match[1];
         // Define the fields for the object
         const fields = {
@@ -47,6 +49,11 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
           });
         }
       } else {
+        // If the dot is not preceded by a valid variable, do not provide suggestions
+        if (textUntilPosition.endsWith(".")) {
+          return { suggestions: [] };
+        }
+        
         // Default suggestions
         suggestions.push({
           label: "myObject",
@@ -61,7 +68,7 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
           range: range,
         });
       }
-
+  
       // Add snippets using functions from snippets.js
       suggestions.push(snippets.createIfSnippet(range));
       suggestions.push(snippets.createIfElseSnippet(range));
@@ -71,4 +78,5 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
       return { suggestions: suggestions };
     },
   });
+  
 });

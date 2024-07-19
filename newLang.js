@@ -74,7 +74,7 @@ require(["vs/editor/editor.main", "style", "snippets"], function (monaco, setupH
       suggestions.push(snippets.createIfElseSnippet(range));
       suggestions.push(snippets.createForSnippet(range));
       suggestions.push(snippets.createWhileSnippet(range));
-  
+      console.log(suggestions);
       return { suggestions: suggestions };
     },
   });
